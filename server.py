@@ -16,14 +16,10 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# ============================================================
-#  CONFIG
-# ============================================================
+# ============ CONFIG ============
 TOKEN_TTL = 180  # seconds (3 minutes)
 
-# ============================================================
-#  STATE
-# ============================================================
+# ============ STATE ============
 _lock = threading.Lock()
 _token_queue = deque()
 _stats = {
@@ -38,9 +34,7 @@ _stats = {
     "last_served": None,
 }
 
-# ============================================================
-#  CLEANUP THREAD
-# ============================================================
+# ============ CLEANUP ============
 def _purge_expired():
     now = time.time()
     removed = 0
@@ -59,13 +53,11 @@ def _cleanup_loop():
 _cleaner = threading.Thread(target=_cleanup_loop, daemon=True)
 _cleaner.start()
 
-# ============================================================
-#  API ENDPOINTS
-# ============================================================
+# ============ ENDPOINTS ============
 
 @app.route("/api/save-token", methods=["POST"])
 def receive_token():
-    """Receive token from solver"""
+    """Receive token from yidun_proxyless.py, gen.py, or ab.py"""
     data = request.get_json(silent=True)
     if not data or "token" not in data:
         return jsonify({"error": "missing 'token' field"}), 400
@@ -90,7 +82,6 @@ def receive_token():
         "total_received": _stats["received"],
     }), 200
 
-
 @app.route("/api/get-token", methods=["GET"])
 def get_token():
     """Get 1 token (removes from queue)"""
@@ -107,7 +98,6 @@ def get_token():
             }), 200
         else:
             return jsonify({"error": "no tokens available", "remaining": 0}), 404
-
 
 @app.route("/api/token/bulk", methods=["GET"])
 def get_tokens_bulk():
@@ -134,7 +124,6 @@ def get_tokens_bulk():
         "remaining": len(_token_queue),
     }), 200
 
-
 @app.route("/api/status", methods=["GET"])
 def status():
     """Queue status and statistics"""
@@ -142,14 +131,15 @@ def status():
         _purge_expired()
         elapsed = time.time() - _stats["start_time"]
         rate = _stats["received"] / (elapsed / 60) if elapsed > 0 else 0
-
+        
+        # Get recent tokens (last 5)
         recent_tokens = []
         for item in list(_token_queue)[-5:]:
             recent_tokens.append({
                 "token": item["token"][:40] + "...",
                 "age": round(time.time() - item["ts"], 1)
             })
-
+        
         return jsonify({
             "queue_size": len(_token_queue),
             "total_received": _stats["received"],
@@ -166,7 +156,6 @@ def status():
             "recent_tokens": recent_tokens,
         }), 200
 
-
 @app.route("/api/tokens", methods=["DELETE"])
 def flush_tokens():
     """Delete all tokens from queue"""
@@ -175,7 +164,6 @@ def flush_tokens():
         _token_queue.clear()
         _stats["flushed"] += count
     return jsonify({"status": "flushed", "removed": count}), 200
-
 
 @app.route("/api/tokens/count", methods=["GET"])
 def token_count():
@@ -188,7 +176,6 @@ def token_count():
             "total_served": _stats["served"],
         }), 200
 
-
 @app.route("/", methods=["GET"])
 def index():
     """Simple dashboard"""
@@ -197,7 +184,7 @@ def index():
         return jsonify({
             "status": "Token Server Running",
             "version": "2.0",
-            "mode": "RAM Only (NO STORAGE)",
+            "mode": "NO STORAGE - RAM only",
             "queue_size": len(_token_queue),
             "total_received": _stats["received"],
             "total_served": _stats["served"],
@@ -212,7 +199,6 @@ def index():
             }
         })
 
-
 @app.route("/health", methods=["GET"])
 def health():
     """Health check"""
@@ -223,10 +209,7 @@ def health():
         "total_received": _stats["received"],
     })
 
-
-# ============================================================
-#  HTML DASHBOARD
-# ============================================================
+# ============ HTML DASHBOARD ============
 DASHBOARD_HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -235,25 +218,25 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Token Server</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0e17;color:#e0e0e0;font-family:'Segoe UI',sans-serif;padding:20px}
-h1{color:#00e5ff;font-size:24px;margin-bottom:6px}
-.sub{color:#666;font-size:14px;margin-bottom:24px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px}
-.card{background:#151515;border:1px solid #222;border-radius:10px;padding:14px 16px;text-align:center}
-.card .val{font-size:28px;font-weight:700;color:#00e5ff}
-.card .lbl{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
-.card.green .val{color:#76ff03}
-.card.orange .val{color:#ff9100}
-.card.pink .val{color:#ff6b81}
-.card.purple .val{color:#d500f9}
-.bar{background:#151515;border:1px solid #222;border-radius:10px;padding:16px;margin-bottom:20px}
-.bar .fill{height:24px;background:linear-gradient(90deg,#00e5ff,#76ff03);border-radius:6px;transition:width .5s;min-width:2px}
-.bar-label{font-size:12px;color:#666;margin-top:4px}
-.tokens{background:#151515;border:1px solid #222;border-radius:10px;padding:16px;max-height:300px;overflow-y:auto}
-.tokens .item{padding:6px 0;border-bottom:1px solid #222;font-family:monospace;font-size:12px;color:#00e5ff;word-break:break-all}
-.tokens .item .time{color:#666;float:right}
-.text-muted{color:#666;font-size:12px}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0a0e17;color:#e0e0e0;font-family:'Segoe UI',sans-serif;padding:20px}
+  h1{color:#00e5ff;font-size:24px;margin-bottom:6px}
+  .sub{color:#666;font-size:14px;margin-bottom:24px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px}
+  .card{background:#151515;border:1px solid #222;border-radius:10px;padding:14px 16px;text-align:center}
+  .card .val{font-size:28px;font-weight:700;color:#00e5ff}
+  .card .lbl{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+  .card.green .val{color:#76ff03}
+  .card.orange .val{color:#ff9100}
+  .card.pink .val{color:#ff6b81}
+  .card.purple .val{color:#d500f9}
+  .bar{background:#151515;border:1px solid #222;border-radius:10px;padding:16px;margin-bottom:20px}
+  .bar .fill{height:24px;background:linear-gradient(90deg,#00e5ff,#76ff03);border-radius:6px;transition:width .5s;min-width:2px}
+  .bar-label{font-size:12px;color:#666;margin-top:4px}
+  .tokens{background:#151515;border:1px solid #222;border-radius:10px;padding:16px;max-height:300px;overflow-y:auto}
+  .tokens .item{padding:6px 0;border-bottom:1px solid #222;font-family:monospace;font-size:12px;color:#00e5ff;word-break:break-all}
+  .tokens .item .time{color:#666;float:right}
+  .text-muted{color:#666;font-size:12px}
 </style>
 </head>
 <body>
@@ -278,7 +261,6 @@ h1{color:#00e5ff;font-size:24px;margin-bottom:6px}
 </body>
 </html>"""
 
-
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
     """HTML dashboard for browser"""
@@ -289,14 +271,15 @@ def dashboard():
         q = len(_token_queue)
         peak = _stats["peak_queue"] or 1
         bar_pct = min(int(q / peak * 100), 100) if peak else 0
-
+        
+        # Build tokens HTML
         tokens_html = ""
         for item in list(_token_queue)[-10:]:
             tokens_html += f'<div class="item">{item["token"][:50]}... <span class="time">{round(time.time() - item["ts"], 1)}s</span></div>'
-
+        
         if not tokens_html:
             tokens_html = '<div class="text-muted">No tokens in queue</div>'
-
+        
         html = DASHBOARD_HTML.format(
             ttl=TOKEN_TTL,
             queue=q,
@@ -310,10 +293,7 @@ def dashboard():
         )
         return html, 200, {"Content-Type": "text/html"}
 
-
-# ============================================================
-#  MAIN
-# ============================================================
+# ============ MAIN ============
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Token Server v2")
     parser.add_argument("--host", default="0.0.0.0", help="Bind address")
@@ -324,18 +304,21 @@ if __name__ == "__main__":
     TOKEN_TTL = args.ttl
 
     print(f"""
-[ Token Server v2.0 ]
-  Mode   : RAM Only (NO STORAGE)
-  Port   : {args.port}
-  TTL    : {args.ttl}s
-  URL    : http://{args.host}:{args.port}
+╔═══════════════════════════════════════╗
+║     Token Server - Storage Queue      ║
+╠═══════════════════════════════════════╣
+║  Mode     : RAM Only (NO STORAGE)     ║
+║  Port     : {args.port}                     ║
+║  TTL      : {args.ttl}s                   ║
+║  Endpoint : http://{args.host}:{args.port} ║
+╚═══════════════════════════════════════╝
 
-  POST   /api/save-token
-  GET    /api/get-token
-  GET    /api/token/bulk?n=5
-  GET    /api/status
-  DELETE /api/tokens
-  GET    /dashboard
+  POST   /api/save-token     → Send token
+  GET    /api/get-token      → Get 1 token
+  GET    /api/token/bulk?n=5 → Get multiple
+  GET    /api/status         → Stats
+  DELETE /api/tokens         → Flush queue
+  GET    /dashboard          → HTML Dashboard
 """)
 
     app.run(host=args.host, port=args.port, debug=False, threaded=True)
