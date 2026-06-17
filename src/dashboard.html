@@ -1,146 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CN31 Token</title>
-    <link rel="stylesheet" href="/src/style.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
+
     <div class="wrapper">
+
+        <!-- ===== BACKGROUND OVERLAY ===== -->
         <div class="glass-bg"></div>
+
+        <!-- ===== MAIN CONTAINER ===== -->
         <div class="container">
-            <div class="stats-side">
-                <div class="logo">
-                    <i class='bx bx-code-alt'></i>
+
+            <!-- ===== LEFT: STATS ===== -->
+            <aside class="stats-side">
+
+                <!-- Logo -->
+                <header class="logo">
+                    <i class="fas fa-code"></i>
                     CN31 <span>Token</span>
                     <span class="badge">v2.0</span>
-                </div>
+                </header>
 
-                <div class="stats-grid" id="statsGrid">
+                <!-- Stats Grid -->
+                <section class="stats-grid" id="statsGrid">
                     <div class="stat-card">
                         <div class="value green" id="queueCount">0</div>
-                        <div class="label"><i class='bx bx-layer'></i> Queue</div>
+                        <div class="label"><i class="fas fa-layer-group"></i> Queue</div>
                     </div>
                     <div class="stat-card">
                         <div class="value blue" id="receivedCount">0</div>
-                        <div class="label"><i class='bx bx-download'></i> Received</div>
+                        <div class="label"><i class="fas fa-download"></i> Received</div>
                     </div>
                     <div class="stat-card">
                         <div class="value orange" id="servedCount">0</div>
-                        <div class="label"><i class='bx bx-check-circle'></i> Served</div>
+                        <div class="label"><i class="fas fa-check-circle"></i> Served</div>
                     </div>
                     <div class="stat-card">
                         <div class="value pink" id="expiredCount">0</div>
-                        <div class="label"><i class='bx bx-time'></i> Expired</div>
+                        <div class="label"><i class="fas fa-clock"></i> Expired</div>
                     </div>
-                </div>
+                </section>
 
-                <div class="progress-section">
+                <!-- Progress Bar -->
+                <section class="progress-section">
                     <div class="label-row">
-                        <span><i class='bx bx-data'></i> Queue Capacity</span>
+                        <span><i class="fas fa-database"></i> Queue Capacity</span>
                         <span id="queueProgressText">0 / 0</span>
                     </div>
                     <div class="progress-bar">
                         <div class="fill" id="queueProgressFill" style="width: 0%"></div>
                     </div>
-                </div>
+                </section>
 
+                <!-- Info Row -->
                 <div class="info-row">
-                    <span><i class='bx bx-timer'></i> <strong id="uptime">0s</strong> uptime</span>
-                    <span><i class='bx bx-flash'></i> <strong id="tokensPerMin">0</strong> /min</span>
-                    <span><i class='bx bx-trending-up'></i> <strong id="peakQueue">0</strong> peak</span>
+                    <span><i class="fas fa-stopwatch"></i> <strong id="uptime">0s</strong> uptime</span>
+                    <span><i class="fas fa-bolt"></i> <strong id="tokensPerMin">0</strong> /min</span>
+                    <span><i class="fas fa-chart-line"></i> <strong id="peakQueue">0</strong> peak</span>
                 </div>
 
-                <div class="api-endpoints">
-                    <h4><i class='bx bx-terminal'></i> API Endpoints</h4>
+                <!-- API Endpoints -->
+                <footer class="api-endpoints">
+                    <h4><i class="fas fa-terminal"></i> API Endpoints</h4>
                     <span class="endpoint"><span class="method">POST</span> /api/save-token</span>
                     <span class="endpoint"><span class="method">GET</span> /api/get-token</span>
                     <span class="endpoint"><span class="method">GET</span> /api/token/bulk?n=5</span>
                     <span class="endpoint"><span class="method">GET</span> /api/status</span>
                     <span class="endpoint"><span class="method">DELETE</span> /api/tokens</span>
-                </div>
-            </div>
+                </footer>
 
-            <div class="tokens-side">
-                <div class="tokens-header">
-                    <h3><i class='bx bx-list-ul'></i> Recent Tokens</h3>
-                    <span class="count" id="tokenCount"><i class='bx bx-layer'></i> 0</span>
-                </div>
+            </aside>
+
+            <!-- ===== RIGHT: TOKENS ===== -->
+            <main class="tokens-side">
+
+                <!-- Header -->
+                <header class="tokens-header">
+                    <h3><i class="fas fa-list-ul"></i> Recent Tokens</h3>
+                    <span class="count" id="tokenCount"><i class="fas fa-layer-group"></i> 0</span>
+                </header>
+
+                <!-- Token List -->
                 <div class="tokens-list" id="tokenList">
-                    <div class="empty-state"><i class='bx bx-inbox'></i> No tokens</div>
+                    <div class="empty-state"><i class="fas fa-inbox"></i> No tokens</div>
                 </div>
-            </div>
+
+            </main>
+
         </div>
 
-        <div class="analysis-section">
-            <div class="analysis-header">
-                <h3><i class='bx bx-stats'></i> Static Analysis</h3>
+        <!-- ===== ANALYSIS SECTION ===== -->
+        <section class="analysis-section">
+
+            <!-- Header -->
+            <header class="analysis-header">
+                <h3><i class="fas fa-chart-pie"></i> Static Analysis</h3>
                 <span class="live-dot"><span></span> LIVE</span>
-            </div>
+            </header>
+
+            <!-- Circle Grid -->
             <div class="analysis-grid">
-                <div class="analysis-card">
+
+                <!-- Card 1: Total Tokens -->
+                <article class="analysis-card">
                     <div class="circle-progress">
                         <svg viewBox="0 0 120 120">
-                            <circle class="circle-bg" cx="60" cy="60" r="50"/>
-                            <circle class="circle-fill" id="circleTotal" cx="60" cy="60" r="50" 
-                                    stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+                            <circle class="circle-bg" cx="60" cy="60" r="50" />
+                            <circle class="circle-fill" id="circleTotal" cx="60" cy="60" r="50"
+                                    stroke-dasharray="314.16" stroke-dashoffset="314.16" />
                         </svg>
                         <div class="circle-content">
-                            <i class='bx bx-receipt'></i>
+                            <i class="fas fa-receipt"></i>
                             <span class="circle-value" id="totalTokens">0</span>
                             <span class="circle-label">Total</span>
                         </div>
                     </div>
-                </div>
-                <div class="analysis-card">
+                </article>
+
+                <!-- Card 2: Success Rate -->
+                <article class="analysis-card">
                     <div class="circle-progress">
                         <svg viewBox="0 0 120 120">
-                            <circle class="circle-bg" cx="60" cy="60" r="50"/>
-                            <circle class="circle-fill" id="circleRate" cx="60" cy="60" r="50" 
-                                    stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+                            <circle class="circle-bg" cx="60" cy="60" r="50" />
+                            <circle class="circle-fill" id="circleRate" cx="60" cy="60" r="50"
+                                    stroke-dasharray="314.16" stroke-dashoffset="314.16" />
                         </svg>
                         <div class="circle-content">
-                            <i class='bx bx-check-shield'></i>
+                            <i class="fas fa-shield-alt"></i>
                             <span class="circle-value" id="successRate">0%</span>
                             <span class="circle-label">Success</span>
                         </div>
                     </div>
-                </div>
-                <div class="analysis-card">
+                </article>
+
+                <!-- Card 3: Avg Age -->
+                <article class="analysis-card">
                     <div class="circle-progress">
                         <svg viewBox="0 0 120 120">
-                            <circle class="circle-bg" cx="60" cy="60" r="50"/>
-                            <circle class="circle-fill" id="circleAge" cx="60" cy="60" r="50" 
-                                    stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+                            <circle class="circle-bg" cx="60" cy="60" r="50" />
+                            <circle class="circle-fill" id="circleAge" cx="60" cy="60" r="50"
+                                    stroke-dasharray="314.16" stroke-dashoffset="314.16" />
                         </svg>
                         <div class="circle-content">
-                            <i class='bx bx-hourglass'></i>
+                            <i class="fas fa-hourglass-half"></i>
                             <span class="circle-value" id="avgAge">0s</span>
                             <span class="circle-label">Avg Age</span>
                         </div>
                     </div>
-                </div>
-                <div class="analysis-card">
+                </article>
+
+                <!-- Card 4: Throughput -->
+                <article class="analysis-card">
                     <div class="circle-progress">
                         <svg viewBox="0 0 120 120">
-                            <circle class="circle-bg" cx="60" cy="60" r="50"/>
-                            <circle class="circle-fill" id="circleThroughput" cx="60" cy="60" r="50" 
-                                    stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+                            <circle class="circle-bg" cx="60" cy="60" r="50" />
+                            <circle class="circle-fill" id="circleThroughput" cx="60" cy="60" r="50"
+                                    stroke-dasharray="314.16" stroke-dashoffset="314.16" />
                         </svg>
                         <div class="circle-content">
-                            <i class='bx bx-tachometer'></i>
+                            <i class="fas fa-gauge-high"></i>
                             <span class="circle-value" id="throughput">0/m</span>
                             <span class="circle-label">Throughput</span>
                         </div>
                     </div>
-                </div>
+                </article>
+
             </div>
-        </div>
+
+        </section>
+
     </div>
 
+    <!-- ===== JAVASCRIPT ===== -->
     <script>
+
         function animateCircle(element, percentage) {
             const circumference = 314.16;
             const offset = circumference - (percentage / 100) * circumference;
@@ -149,9 +188,11 @@
         }
 
         function fetchData() {
+
             fetch('/api/status')
                 .then(response => response.json())
                 .then(data => {
+
                     document.getElementById('queueCount').textContent = data.queue_size;
                     document.getElementById('receivedCount').textContent = data.total_received;
                     document.getElementById('servedCount').textContent = data.total_served;
@@ -159,21 +200,28 @@
                     document.getElementById('uptime').textContent = data.uptime_seconds + 's';
                     document.getElementById('tokensPerMin').textContent = data.tokens_per_minute;
                     document.getElementById('peakQueue').textContent = data.peak_queue;
-                    document.getElementById('tokenCount').innerHTML = '<i class="bx bx-layer"></i> ' + data.queue_size;
-                    
+                    document.getElementById('tokenCount').innerHTML =
+                        '<i class="fas fa-layer-group"></i> ' + data.queue_size;
+
                     const peak = data.peak_queue || 1;
                     const pct = Math.min((data.queue_size / peak) * 100, 100);
                     document.getElementById('queueProgressFill').style.width = pct + '%';
-                    document.getElementById('queueProgressText').textContent = data.queue_size + ' / ' + peak;
+                    document.getElementById('queueProgressText').textContent =
+                        data.queue_size + ' / ' + peak;
 
                     const total = data.total_received + data.total_served;
                     document.getElementById('totalTokens').textContent = total;
-                    animateCircle(document.getElementById('circleTotal'), Math.min(total / 100 * 100, 100));
-                    
-                    const rate = data.total_served > 0 ? Math.round((data.total_served / (data.total_received || 1)) * 100) : 0;
+                    animateCircle(
+                        document.getElementById('circleTotal'),
+                        Math.min(total / 100 * 100, 100)
+                    );
+
+                    const rate = data.total_served > 0
+                        ? Math.round((data.total_served / (data.total_received || 1)) * 100)
+                        : 0;
                     document.getElementById('successRate').textContent = rate + '%';
                     animateCircle(document.getElementById('circleRate'), rate);
-                    
+
                     let avgAge = 0;
                     if (data.recent_tokens && data.recent_tokens.length > 0) {
                         const sum = data.recent_tokens.reduce((acc, t) => acc + t.age, 0);
@@ -182,52 +230,69 @@
                     document.getElementById('avgAge').textContent = avgAge + 's';
                     const agePct = Math.min((avgAge / 180) * 100, 100);
                     animateCircle(document.getElementById('circleAge'), 100 - agePct);
-                    
-                    document.getElementById('throughput').textContent = data.tokens_per_minute + '/m';
+
+                    document.getElementById('throughput').textContent =
+                        data.tokens_per_minute + '/m';
                     const throughputPct = Math.min((data.tokens_per_minute / 50) * 100, 100);
                     animateCircle(document.getElementById('circleThroughput'), throughputPct);
 
                     const tokenList = document.getElementById('tokenList');
+
                     if (data.recent_tokens && data.recent_tokens.length > 0) {
+
                         let html = '';
+
                         data.recent_tokens.forEach(item => {
+
                             const age = item.age;
                             let color, status, icon;
+
                             if (age < 60) {
                                 color = '#48c9b0';
                                 status = 'Fresh';
-                                icon = '<i class="bx bx-check-circle" style="color:#48c9b0"></i>';
+                                icon = '<i class="fas fa-check-circle" style="color:#48c9b0"></i>';
                             } else if (age < 120) {
                                 color = '#f1c40f';
                                 status = 'Aging';
-                                icon = '<i class="bx bx-time" style="color:#f1c40f"></i>';
+                                icon = '<i class="fas fa-clock" style="color:#f1c40f"></i>';
                             } else {
                                 color = '#e74c3c';
                                 status = 'Expiring';
-                                icon = '<i class="bx bx-error-circle" style="color:#e74c3c"></i>';
+                                icon = '<i class="fas fa-exclamation-circle" style="color:#e74c3c"></i>';
                             }
+
                             html += `
                                 <div class="token-row">
                                     <span class="token-text" style="color:${color}">${item.token}</span>
                                     <span class="token-meta">
-                                        <span class="token-age"><i class='bx bx-clock'></i> ${age}s</span>
+                                        <span class="token-age"><i class="fas fa-clock"></i> ${age}s</span>
                                         <span class="token-status" style="color:${color}">${icon} ${status}</span>
                                     </span>
                                 </div>
                             `;
+
                         });
+
                         tokenList.innerHTML = html;
+
                     } else {
-                        tokenList.innerHTML = '<div class="empty-state"><i class="bx bx-inbox"></i> No tokens</div>';
+
+                        tokenList.innerHTML =
+                            '<div class="empty-state"><i class="fas fa-inbox"></i> No tokens</div>';
+
                     }
+
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    console.error('Error fetching data:', error);
                 });
+
         }
 
         fetchData();
         setInterval(fetchData, 2000);
+
     </script>
+
 </body>
 </html>
