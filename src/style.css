@@ -488,56 +488,91 @@ body {
 .analysis-card {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 16px 20px;
+    justify-content: center;
+    padding: 20px;
     background: rgba(30, 60, 50, 0.15);
-    border-radius: 14px;
+    border-radius: 16px;
     border: 1px solid rgba(72, 201, 176, 0.06);
     transition: all 0.4s ease;
 }
 
 .analysis-card:hover {
     background: rgba(30, 60, 50, 0.3);
-    transform: translateY(-2px);
+    transform: translateY(-4px);
     border-color: rgba(72, 201, 176, 0.15);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.analysis-icon {
-    width: 44px;
-    height: 44px;
+.circle-progress {
+    position: relative;
+    width: 120px;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(72, 201, 176, 0.12);
-    border-radius: 12px;
-    font-size: 22px;
-    color: #48c9b0;
-    transition: all 0.3s ease;
 }
 
-.analysis-card:hover .analysis-icon {
-    background: rgba(72, 201, 176, 0.2);
-    transform: scale(1.05);
+.circle-progress svg {
+    width: 120px;
+    height: 120px;
+    transform: rotate(-90deg);
 }
 
-.analysis-info {
+.circle-bg {
+    fill: none;
+    stroke: rgba(72, 201, 176, 0.08);
+    stroke-width: 6;
+}
+
+.circle-fill {
+    fill: none;
+    stroke: #48c9b0;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 314.16;
+    stroke-dashoffset: 314.16;
+    transition: stroke-dashoffset 1s ease-in-out;
+}
+
+.analysis-card:nth-child(2) .circle-fill {
+    stroke: #5dade2;
+}
+
+.analysis-card:nth-child(3) .circle-fill {
+    stroke: #f1c40f;
+}
+
+.analysis-card:nth-child(4) .circle-fill {
+    stroke: #e67e8a;
+}
+
+.circle-content {
+    position: absolute;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
 }
 
-.analysis-label {
-    font-size: 11px;
+.circle-content i {
+    font-size: 20px;
     color: rgba(232, 245, 240, 0.3);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    margin-bottom: 2px;
 }
 
-.analysis-value {
-    font-size: 24px;
+.circle-content .circle-value {
+    font-size: 20px;
     font-weight: 700;
     color: #e8f5f0;
-    margin-top: 2px;
+    line-height: 1.2;
+}
+
+.circle-content .circle-label {
+    font-size: 9px;
+    color: rgba(232, 245, 240, 0.25);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 @media (max-width: 992px) {
@@ -596,11 +631,21 @@ body {
     }
     
     .analysis-card {
-        padding: 12px 16px;
+        padding: 16px;
     }
     
-    .analysis-value {
-        font-size: 20px;
+    .circle-progress {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .circle-progress svg {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .circle-content .circle-value {
+        font-size: 16px;
     }
 }
 
@@ -618,6 +663,24 @@ body {
     }
     
     .analysis-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .circle-progress {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .circle-progress svg {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .circle-content .circle-value {
+        font-size: 14px;
+    }
+    
+    .circle-content i {
+        font-size: 16px;
     }
 }

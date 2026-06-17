@@ -81,31 +81,59 @@
             </div>
             <div class="analysis-grid">
                 <div class="analysis-card">
-                    <div class="analysis-icon"><i class='bx bx-receipt'></i></div>
-                    <div class="analysis-info">
-                        <span class="analysis-label">Total Tokens</span>
-                        <span class="analysis-value" id="totalTokens">0</span>
+                    <div class="circle-progress">
+                        <svg viewBox="0 0 120 120">
+                            <circle class="circle-bg" cx="60" cy="60" r="50"/>
+                            <circle class="circle-fill" id="circleTotal" cx="60" cy="60" r="50" 
+                                    stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+                        </svg>
+                        <div class="circle-content">
+                            <i class='bx bx-receipt'></i>
+                            <span class="circle-value" id="totalTokens">0</span>
+                            <span class="circle-label">Total</span>
+                        </div>
                     </div>
                 </div>
                 <div class="analysis-card">
-                    <div class="analysis-icon"><i class='bx bx-check-shield'></i></div>
-                    <div class="analysis-info">
-                        <span class="analysis-label">Success Rate</span>
-                        <span class="analysis-value" id="successRate">0%</span>
+                    <div class="circle-progress">
+                        <svg viewBox="0 0 120 120">
+                            <circle class="circle-bg" cx="60" cy="60" r="50"/>
+                            <circle class="circle-fill" id="circleRate" cx="60" cy="60" r="50" 
+                                    stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+                        </svg>
+                        <div class="circle-content">
+                            <i class='bx bx-check-shield'></i>
+                            <span class="circle-value" id="successRate">0%</span>
+                            <span class="circle-label">Success</span>
+                        </div>
                     </div>
                 </div>
                 <div class="analysis-card">
-                    <div class="analysis-icon"><i class='bx bx-hourglass'></i></div>
-                    <div class="analysis-info">
-                        <span class="analysis-label">Avg Token Age</span>
-                        <span class="analysis-value" id="avgAge">0s</span>
+                    <div class="circle-progress">
+                        <svg viewBox="0 0 120 120">
+                            <circle class="circle-bg" cx="60" cy="60" r="50"/>
+                            <circle class="circle-fill" id="circleAge" cx="60" cy="60" r="50" 
+                                    stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+                        </svg>
+                        <div class="circle-content">
+                            <i class='bx bx-hourglass'></i>
+                            <span class="circle-value" id="avgAge">0s</span>
+                            <span class="circle-label">Avg Age</span>
+                        </div>
                     </div>
                 </div>
                 <div class="analysis-card">
-                    <div class="analysis-icon"><i class='bx bx-tachometer'></i></div>
-                    <div class="analysis-info">
-                        <span class="analysis-label">Throughput</span>
-                        <span class="analysis-value" id="throughput">0/min</span>
+                    <div class="circle-progress">
+                        <svg viewBox="0 0 120 120">
+                            <circle class="circle-bg" cx="60" cy="60" r="50"/>
+                            <circle class="circle-fill" id="circleThroughput" cx="60" cy="60" r="50" 
+                                    stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+                        </svg>
+                        <div class="circle-content">
+                            <i class='bx bx-tachometer'></i>
+                            <span class="circle-value" id="throughput">0/m</span>
+                            <span class="circle-label">Throughput</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -113,6 +141,13 @@
     </div>
 
     <script>
+        function animateCircle(element, percentage) {
+            const circumference = 314.16;
+            const offset = circumference - (percentage / 100) * circumference;
+            element.style.strokeDashoffset = offset;
+            element.style.transition = 'stroke-dashoffset 1s ease-in-out';
+        }
+
         function fetchData() {
             fetch('/api/status')
                 .then(response => response.json())
@@ -133,8 +168,11 @@
 
                     const total = data.total_received + data.total_served;
                     document.getElementById('totalTokens').textContent = total;
+                    animateCircle(document.getElementById('circleTotal'), Math.min(total / 100 * 100, 100));
+                    
                     const rate = data.total_served > 0 ? Math.round((data.total_served / (data.total_received || 1)) * 100) : 0;
                     document.getElementById('successRate').textContent = rate + '%';
+                    animateCircle(document.getElementById('circleRate'), rate);
                     
                     let avgAge = 0;
                     if (data.recent_tokens && data.recent_tokens.length > 0) {
@@ -142,7 +180,12 @@
                         avgAge = Math.round(sum / data.recent_tokens.length);
                     }
                     document.getElementById('avgAge').textContent = avgAge + 's';
-                    document.getElementById('throughput').textContent = data.tokens_per_minute + '/min';
+                    const agePct = Math.min((avgAge / 180) * 100, 100);
+                    animateCircle(document.getElementById('circleAge'), 100 - agePct);
+                    
+                    document.getElementById('throughput').textContent = data.tokens_per_minute + '/m';
+                    const throughputPct = Math.min((data.tokens_per_minute / 50) * 100, 100);
+                    animateCircle(document.getElementById('circleThroughput'), throughputPct);
 
                     const tokenList = document.getElementById('tokenList');
                     if (data.recent_tokens && data.recent_tokens.length > 0) {
