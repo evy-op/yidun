@@ -5,7 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CN31 Token</title>
     <link rel="stylesheet" href="/src/style.css" />
+
+    <!-- ===== ICON LIBRARIES ===== -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <!-- Lucide (via CDN) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/phosphor-icons@1.4.2/src/css/phosphor.css" />
+
 </head>
 <body>
 
@@ -23,6 +36,9 @@
                 <!-- Logo -->
                 <header class="logo">
                     <i class="fas fa-code"></i>
+                    <i class="bx bx-code-alt"></i>
+                    <i data-lucide="code"></i>
+                    <i class="ph-code"></i>
                     CN31 <span>Token</span>
                     <span class="badge">v2.0</span>
                 </header>
@@ -31,26 +47,56 @@
                 <section class="stats-grid" id="statsGrid">
                     <div class="stat-card">
                         <div class="value green" id="queueCount">0</div>
-                        <div class="label"><i class="fas fa-layer-group"></i> Queue</div>
+                        <div class="label">
+                            <i class="fas fa-layer-group"></i>
+                            <i class="bx bx-layer"></i>
+                            <i data-lucide="layers"></i>
+                            <i class="ph-stack"></i>
+                            Queue
+                        </div>
                     </div>
                     <div class="stat-card">
                         <div class="value blue" id="receivedCount">0</div>
-                        <div class="label"><i class="fas fa-download"></i> Received</div>
+                        <div class="label">
+                            <i class="fas fa-download"></i>
+                            <i class="bx bx-download"></i>
+                            <i data-lucide="download"></i>
+                            <i class="ph-arrow-down"></i>
+                            Received
+                        </div>
                     </div>
                     <div class="stat-card">
                         <div class="value orange" id="servedCount">0</div>
-                        <div class="label"><i class="fas fa-check-circle"></i> Served</div>
+                        <div class="label">
+                            <i class="fas fa-check-circle"></i>
+                            <i class="bx bx-check-circle"></i>
+                            <i data-lucide="check-circle"></i>
+                            <i class="ph-check-circle"></i>
+                            Served
+                        </div>
                     </div>
                     <div class="stat-card">
                         <div class="value pink" id="expiredCount">0</div>
-                        <div class="label"><i class="fas fa-clock"></i> Expired</div>
+                        <div class="label">
+                            <i class="fas fa-clock"></i>
+                            <i class="bx bx-time"></i>
+                            <i data-lucide="clock"></i>
+                            <i class="ph-clock"></i>
+                            Expired
+                        </div>
                     </div>
                 </section>
 
                 <!-- Progress Bar -->
                 <section class="progress-section">
                     <div class="label-row">
-                        <span><i class="fas fa-database"></i> Queue Capacity</span>
+                        <span>
+                            <i class="fas fa-database"></i>
+                            <i class="bx bx-data"></i>
+                            <i data-lucide="database"></i>
+                            <i class="ph-database"></i>
+                            Queue Capacity
+                        </span>
                         <span id="queueProgressText">0 / 0</span>
                     </div>
                     <div class="progress-bar">
@@ -60,14 +106,38 @@
 
                 <!-- Info Row -->
                 <div class="info-row">
-                    <span><i class="fas fa-stopwatch"></i> <strong id="uptime">0s</strong> uptime</span>
-                    <span><i class="fas fa-bolt"></i> <strong id="tokensPerMin">0</strong> /min</span>
-                    <span><i class="fas fa-chart-line"></i> <strong id="peakQueue">0</strong> peak</span>
+                    <span>
+                        <i class="fas fa-stopwatch"></i>
+                        <i class="bx bx-timer"></i>
+                        <i data-lucide="timer"></i>
+                        <i class="ph-timer"></i>
+                        <strong id="uptime">0s</strong> uptime
+                    </span>
+                    <span>
+                        <i class="fas fa-bolt"></i>
+                        <i class="bx bx-flash"></i>
+                        <i data-lucide="zap"></i>
+                        <i class="ph-lightning"></i>
+                        <strong id="tokensPerMin">0</strong> /min
+                    </span>
+                    <span>
+                        <i class="fas fa-chart-line"></i>
+                        <i class="bx bx-trending-up"></i>
+                        <i data-lucide="trending-up"></i>
+                        <i class="ph-trend-up"></i>
+                        <strong id="peakQueue">0</strong> peak
+                    </span>
                 </div>
 
                 <!-- API Endpoints -->
                 <footer class="api-endpoints">
-                    <h4><i class="fas fa-terminal"></i> API Endpoints</h4>
+                    <h4>
+                        <i class="fas fa-terminal"></i>
+                        <i class="bx bx-terminal"></i>
+                        <i data-lucide="terminal"></i>
+                        <i class="ph-terminal-window"></i>
+                        API Endpoints
+                    </h4>
                     <span class="endpoint"><span class="method">POST</span> /api/save-token</span>
                     <span class="endpoint"><span class="method">GET</span> /api/get-token</span>
                     <span class="endpoint"><span class="method">GET</span> /api/token/bulk?n=5</span>
@@ -82,13 +152,31 @@
 
                 <!-- Header -->
                 <header class="tokens-header">
-                    <h3><i class="fas fa-list-ul"></i> Recent Tokens</h3>
-                    <span class="count" id="tokenCount"><i class="fas fa-layer-group"></i> 0</span>
+                    <h3>
+                        <i class="fas fa-list-ul"></i>
+                        <i class="bx bx-list-ul"></i>
+                        <i data-lucide="list"></i>
+                        <i class="ph-list"></i>
+                        Recent Tokens
+                    </h3>
+                    <span class="count" id="tokenCount">
+                        <i class="fas fa-layer-group"></i>
+                        <i class="bx bx-layer"></i>
+                        <i data-lucide="layers"></i>
+                        <i class="ph-stack"></i>
+                        0
+                    </span>
                 </header>
 
                 <!-- Token List -->
                 <div class="tokens-list" id="tokenList">
-                    <div class="empty-state"><i class="fas fa-inbox"></i> No tokens</div>
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <i class="bx bx-inbox"></i>
+                        <i data-lucide="inbox"></i>
+                        <i class="ph-inbox"></i>
+                        No tokens
+                    </div>
                 </div>
 
             </main>
@@ -100,7 +188,13 @@
 
             <!-- Header -->
             <header class="analysis-header">
-                <h3><i class="fas fa-chart-pie"></i> Static Analysis</h3>
+                <h3>
+                    <i class="fas fa-chart-pie"></i>
+                    <i class="bx bx-stats"></i>
+                    <i data-lucide="pie-chart"></i>
+                    <i class="ph-chart-pie"></i>
+                    Static Analysis
+                </h3>
                 <span class="live-dot"><span></span> LIVE</span>
             </header>
 
@@ -117,6 +211,9 @@
                         </svg>
                         <div class="circle-content">
                             <i class="fas fa-receipt"></i>
+                            <i class="bx bx-receipt"></i>
+                            <i data-lucide="receipt"></i>
+                            <i class="ph-receipt"></i>
                             <span class="circle-value" id="totalTokens">0</span>
                             <span class="circle-label">Total</span>
                         </div>
@@ -133,6 +230,9 @@
                         </svg>
                         <div class="circle-content">
                             <i class="fas fa-shield-alt"></i>
+                            <i class="bx bx-check-shield"></i>
+                            <i data-lucide="shield-check"></i>
+                            <i class="ph-shield-check"></i>
                             <span class="circle-value" id="successRate">0%</span>
                             <span class="circle-label">Success</span>
                         </div>
@@ -149,6 +249,9 @@
                         </svg>
                         <div class="circle-content">
                             <i class="fas fa-hourglass-half"></i>
+                            <i class="bx bx-hourglass"></i>
+                            <i data-lucide="hourglass"></i>
+                            <i class="ph-hourglass"></i>
                             <span class="circle-value" id="avgAge">0s</span>
                             <span class="circle-label">Avg Age</span>
                         </div>
@@ -165,6 +268,9 @@
                         </svg>
                         <div class="circle-content">
                             <i class="fas fa-gauge-high"></i>
+                            <i class="bx bx-tachometer"></i>
+                            <i data-lucide="gauge"></i>
+                            <i class="ph-gauge"></i>
                             <span class="circle-value" id="throughput">0/m</span>
                             <span class="circle-label">Throughput</span>
                         </div>
@@ -180,6 +286,10 @@
     <!-- ===== JAVASCRIPT ===== -->
     <script>
 
+        // ----- Initialize Lucide Icons -----
+        lucide.createIcons();
+
+        // ----- animateCircle: updates SVG circle progress -----
         function animateCircle(element, percentage) {
             const circumference = 314.16;
             const offset = circumference - (percentage / 100) * circumference;
@@ -187,6 +297,7 @@
             element.style.transition = 'stroke-dashoffset 1s ease-in-out';
         }
 
+        // ----- fetchData: polls /api/status and updates DOM -----
         function fetchData() {
 
             fetch('/api/status')
@@ -200,8 +311,16 @@
                     document.getElementById('uptime').textContent = data.uptime_seconds + 's';
                     document.getElementById('tokensPerMin').textContent = data.tokens_per_minute;
                     document.getElementById('peakQueue').textContent = data.peak_queue;
-                    document.getElementById('tokenCount').innerHTML =
-                        '<i class="fas fa-layer-group"></i> ' + data.queue_size;
+
+                    const countEl = document.getElementById('tokenCount');
+                    countEl.innerHTML = `
+                        <i class="fas fa-layer-group"></i>
+                        <i class="bx bx-layer"></i>
+                        <i data-lucide="layers"></i>
+                        <i class="ph-stack"></i>
+                        ${data.queue_size}
+                    `;
+                    lucide.createIcons();
 
                     const peak = data.peak_queue || 1;
                     const pct = Math.min((data.queue_size / peak) * 100, 100);
@@ -245,28 +364,49 @@
                         data.recent_tokens.forEach(item => {
 
                             const age = item.age;
-                            let color, status, icon;
+                            let color, status, faIcon, bxIcon, lucideIcon, phIcon;
 
                             if (age < 60) {
                                 color = '#48c9b0';
                                 status = 'Fresh';
-                                icon = '<i class="fas fa-check-circle" style="color:#48c9b0"></i>';
+                                faIcon = 'fa-check-circle';
+                                bxIcon = 'bx-check-circle';
+                                lucideIcon = 'check-circle';
+                                phIcon = 'ph-check-circle';
                             } else if (age < 120) {
                                 color = '#f1c40f';
                                 status = 'Aging';
-                                icon = '<i class="fas fa-clock" style="color:#f1c40f"></i>';
+                                faIcon = 'fa-clock';
+                                bxIcon = 'bx-time';
+                                lucideIcon = 'clock';
+                                phIcon = 'ph-clock';
                             } else {
                                 color = '#e74c3c';
                                 status = 'Expiring';
-                                icon = '<i class="fas fa-exclamation-circle" style="color:#e74c3c"></i>';
+                                faIcon = 'fa-exclamation-circle';
+                                bxIcon = 'bx-error-circle';
+                                lucideIcon = 'alert-circle';
+                                phIcon = 'ph-warning-circle';
                             }
 
                             html += `
                                 <div class="token-row">
                                     <span class="token-text" style="color:${color}">${item.token}</span>
                                     <span class="token-meta">
-                                        <span class="token-age"><i class="fas fa-clock"></i> ${age}s</span>
-                                        <span class="token-status" style="color:${color}">${icon} ${status}</span>
+                                        <span class="token-age">
+                                            <i class="fas fa-clock"></i>
+                                            <i class="bx bx-time"></i>
+                                            <i data-lucide="clock"></i>
+                                            <i class="ph-clock"></i>
+                                            ${age}s
+                                        </span>
+                                        <span class="token-status" style="color:${color}">
+                                            <i class="fas ${faIcon}" style="color:${color}"></i>
+                                            <i class="bx ${bxIcon}" style="color:${color}"></i>
+                                            <i data-lucide="${lucideIcon}" style="color:${color}"></i>
+                                            <i class="${phIcon}" style="color:${color}"></i>
+                                            ${status}
+                                        </span>
                                     </span>
                                 </div>
                             `;
@@ -274,11 +414,20 @@
                         });
 
                         tokenList.innerHTML = html;
+                        lucide.createIcons();
 
                     } else {
 
-                        tokenList.innerHTML =
-                            '<div class="empty-state"><i class="fas fa-inbox"></i> No tokens</div>';
+                        tokenList.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <i class="bx bx-inbox"></i>
+                                <i data-lucide="inbox"></i>
+                                <i class="ph-inbox"></i>
+                                No tokens
+                            </div>
+                        `;
+                        lucide.createIcons();
 
                     }
 
@@ -289,6 +438,7 @@
 
         }
 
+        // ----- Start polling -----
         fetchData();
         setInterval(fetchData, 2000);
 
