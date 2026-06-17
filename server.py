@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-"""
-Token Server - Storage Queue
-Receives tokens from yidun_proxyless.py, gen.py, and ab.py
-"""
 
 import os
 import time
@@ -18,14 +14,8 @@ app = Flask(__name__,
             static_folder='src')
 CORS(app)
 
-# ============================================================
-#  CONFIG
-# ============================================================
-TOKEN_TTL = 180  # seconds (3 minutes)
+TOKEN_TTL = 180
 
-# ============================================================
-#  STATE
-# ============================================================
 _lock = threading.Lock()
 _token_queue = deque()
 _stats = {
@@ -40,9 +30,6 @@ _stats = {
     "last_served": None,
 }
 
-# ============================================================
-#  CLEANUP THREAD
-# ============================================================
 def _purge_expired():
     now = time.time()
     removed = 0
@@ -61,13 +48,8 @@ def _cleanup_loop():
 _cleaner = threading.Thread(target=_cleanup_loop, daemon=True)
 _cleaner.start()
 
-# ============================================================
-#  API ENDPOINTS
-# ============================================================
-
 @app.route("/api/save-token", methods=["POST"])
 def receive_token():
-    """Receive token from solver"""
     data = request.get_json(silent=True)
     if not data or "token" not in data:
         return jsonify({"error": "missing 'token' field"}), 400
@@ -92,10 +74,8 @@ def receive_token():
         "total_received": _stats["received"],
     }), 200
 
-
 @app.route("/api/get-token", methods=["GET"])
 def get_token():
-    """Get 1 token (removes from queue)"""
     with _lock:
         _purge_expired()
         if _token_queue:
@@ -110,10 +90,8 @@ def get_token():
         else:
             return jsonify({"error": "no tokens available", "remaining": 0}), 404
 
-
 @app.route("/api/token/bulk", methods=["GET"])
 def get_tokens_bulk():
-    """Get multiple tokens (removes from queue)"""
     n = request.args.get("n", 1, type=int)
     n = max(1, min(n, 100))
 
@@ -136,10 +114,8 @@ def get_tokens_bulk():
         "remaining": len(_token_queue),
     }), 200
 
-
 @app.route("/api/status", methods=["GET"])
 def status():
-    """Queue status and statistics"""
     with _lock:
         _purge_expired()
         elapsed = time.time() - _stats["start_time"]
@@ -168,20 +144,16 @@ def status():
             "recent_tokens": recent_tokens,
         }), 200
 
-
 @app.route("/api/tokens", methods=["DELETE"])
 def flush_tokens():
-    """Delete all tokens from queue"""
     with _lock:
         count = len(_token_queue)
         _token_queue.clear()
         _stats["flushed"] += count
     return jsonify({"status": "flushed", "removed": count}), 200
 
-
 @app.route("/api/tokens/count", methods=["GET"])
 def token_count():
-    """Get token count only"""
     with _lock:
         _purge_expired()
         return jsonify({
@@ -190,22 +162,16 @@ def token_count():
             "total_served": _stats["served"],
         }), 200
 
-
 @app.route("/", methods=["GET"])
 def dashboard():
-    """Dashboard with live updates"""
     return render_template("dashboard.html")
-
 
 @app.route("/src/<path:filename>")
 def serve_static(filename):
-    """Serve static files from src folder"""
     return send_from_directory('src', filename)
-
 
 @app.route("/health", methods=["GET"])
 def health():
-    """Health check"""
     return jsonify({
         "ok": True,
         "uptime": round(time.time() - _stats["start_time"], 1),
@@ -213,32 +179,21 @@ def health():
         "total_received": _stats["received"],
     })
 
-
-# ============================================================
-#  MAIN
-# ============================================================
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Token Server v2")
-    parser.add_argument("--host", default="0.0.0.0", help="Bind address")
-    parser.add_argument("--port", type=int, default=5050, help="Port (default 5050)")
-    parser.add_argument("--ttl", type=int, default=180, help="Token TTL in seconds")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--host", default="0.0.0.0")
+    parser.add_argument("--port", type=int, default=5050)
+    parser.add_argument("--ttl", type=int, default=180)
     args = parser.parse_args()
 
     TOKEN_TTL = args.ttl
 
     print(f"""
 [ CN31 Token Server v2.0 ]
-  Mode   : RAM Only (NO STORAGE)
+  Mode   : RAM Only
   Port   : {args.port}
   TTL    : {args.ttl}s
   URL    : http://{args.host}:{args.port}
-
-  POST   /api/save-token
-  GET    /api/get-token
-  GET    /api/token/bulk?n=5
-  GET    /api/status
-  DELETE /api/tokens
-  GET    / (Dashboard)
 """)
 
     app.run(host=args.host, port=args.port, debug=False, threaded=True)

@@ -9,15 +9,15 @@
 </head>
 <body>
     <div class="wrapper">
+        <div class="glass-bg"></div>
         <div class="container">
-            <!-- Left Side - Stats -->
             <div class="stats-side">
                 <div class="logo">
                     <i class='bx bx-code-alt'></i>
                     CN31 <span>Token</span>
                     <span class="badge">v2.0</span>
                 </div>
-                
+
                 <div class="stats-grid" id="statsGrid">
                     <div class="stat-card">
                         <div class="value green" id="queueCount">0</div>
@@ -36,7 +36,7 @@
                         <div class="label"><i class='bx bx-time'></i> Expired</div>
                     </div>
                 </div>
-                
+
                 <div class="progress-section">
                     <div class="label-row">
                         <span><i class='bx bx-data'></i> Queue Capacity</span>
@@ -46,13 +46,13 @@
                         <div class="fill" id="queueProgressFill" style="width: 0%"></div>
                     </div>
                 </div>
-                
+
                 <div class="info-row">
                     <span><i class='bx bx-timer'></i> <strong id="uptime">0s</strong> uptime</span>
-                    <span><i class='bx bx-flash'></i> <strong id="tokensPerMin">0</strong> tokens/min</span>
+                    <span><i class='bx bx-flash'></i> <strong id="tokensPerMin">0</strong> /min</span>
                     <span><i class='bx bx-trending-up'></i> <strong id="peakQueue">0</strong> peak</span>
                 </div>
-                
+
                 <div class="api-endpoints">
                     <h4><i class='bx bx-terminal'></i> API Endpoints</h4>
                     <span class="endpoint"><span class="method">POST</span> /api/save-token</span>
@@ -62,27 +62,61 @@
                     <span class="endpoint"><span class="method">DELETE</span> /api/tokens</span>
                 </div>
             </div>
-            
-            <!-- Right Side - Tokens -->
+
             <div class="tokens-side">
                 <div class="tokens-header">
                     <h3><i class='bx bx-list-ul'></i> Recent Tokens</h3>
-                    <span class="count" id="tokenCount"><i class='bx bx-layer'></i> 0 in queue</span>
+                    <span class="count" id="tokenCount"><i class='bx bx-layer'></i> 0</span>
                 </div>
                 <div class="tokens-list" id="tokenList">
-                    <div class="empty-state"><i class='bx bx-inbox'></i> No tokens in queue</div>
+                    <div class="empty-state"><i class='bx bx-inbox'></i> No tokens</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="analysis-section">
+            <div class="analysis-header">
+                <h3><i class='bx bx-stats'></i> Static Analysis</h3>
+                <span class="live-dot"><span></span> LIVE</span>
+            </div>
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <div class="analysis-icon"><i class='bx bx-receipt'></i></div>
+                    <div class="analysis-info">
+                        <span class="analysis-label">Total Tokens</span>
+                        <span class="analysis-value" id="totalTokens">0</span>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <div class="analysis-icon"><i class='bx bx-check-shield'></i></div>
+                    <div class="analysis-info">
+                        <span class="analysis-label">Success Rate</span>
+                        <span class="analysis-value" id="successRate">0%</span>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <div class="analysis-icon"><i class='bx bx-hourglass'></i></div>
+                    <div class="analysis-info">
+                        <span class="analysis-label">Avg Token Age</span>
+                        <span class="analysis-value" id="avgAge">0s</span>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <div class="analysis-icon"><i class='bx bx-tachometer'></i></div>
+                    <div class="analysis-info">
+                        <span class="analysis-label">Throughput</span>
+                        <span class="analysis-value" id="throughput">0/min</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Auto-refresh every 2 seconds
         function fetchData() {
             fetch('/api/status')
                 .then(response => response.json())
                 .then(data => {
-                    // Update stats
                     document.getElementById('queueCount').textContent = data.queue_size;
                     document.getElementById('receivedCount').textContent = data.total_received;
                     document.getElementById('servedCount').textContent = data.total_served;
@@ -90,15 +124,26 @@
                     document.getElementById('uptime').textContent = data.uptime_seconds + 's';
                     document.getElementById('tokensPerMin').textContent = data.tokens_per_minute;
                     document.getElementById('peakQueue').textContent = data.peak_queue;
-                    document.getElementById('tokenCount').innerHTML = '<i class="bx bx-layer"></i> ' + data.queue_size + ' in queue';
+                    document.getElementById('tokenCount').innerHTML = '<i class="bx bx-layer"></i> ' + data.queue_size;
                     
-                    // Update progress bar
                     const peak = data.peak_queue || 1;
                     const pct = Math.min((data.queue_size / peak) * 100, 100);
                     document.getElementById('queueProgressFill').style.width = pct + '%';
                     document.getElementById('queueProgressText').textContent = data.queue_size + ' / ' + peak;
+
+                    const total = data.total_received + data.total_served;
+                    document.getElementById('totalTokens').textContent = total;
+                    const rate = data.total_served > 0 ? Math.round((data.total_served / (data.total_received || 1)) * 100) : 0;
+                    document.getElementById('successRate').textContent = rate + '%';
                     
-                    // Update token list
+                    let avgAge = 0;
+                    if (data.recent_tokens && data.recent_tokens.length > 0) {
+                        const sum = data.recent_tokens.reduce((acc, t) => acc + t.age, 0);
+                        avgAge = Math.round(sum / data.recent_tokens.length);
+                    }
+                    document.getElementById('avgAge').textContent = avgAge + 's';
+                    document.getElementById('throughput').textContent = data.tokens_per_minute + '/min';
+
                     const tokenList = document.getElementById('tokenList');
                     if (data.recent_tokens && data.recent_tokens.length > 0) {
                         let html = '';
@@ -106,17 +151,17 @@
                             const age = item.age;
                             let color, status, icon;
                             if (age < 60) {
-                                color = '#34d399';
+                                color = '#48c9b0';
                                 status = 'Fresh';
-                                icon = '<i class="bx bx-check-circle" style="color:#34d399"></i>';
+                                icon = '<i class="bx bx-check-circle" style="color:#48c9b0"></i>';
                             } else if (age < 120) {
-                                color = '#fbbf24';
+                                color = '#f1c40f';
                                 status = 'Aging';
-                                icon = '<i class="bx bx-time" style="color:#fbbf24"></i>';
+                                icon = '<i class="bx bx-time" style="color:#f1c40f"></i>';
                             } else {
-                                color = '#f87171';
+                                color = '#e74c3c';
                                 status = 'Expiring';
-                                icon = '<i class="bx bx-error-circle" style="color:#f87171"></i>';
+                                icon = '<i class="bx bx-error-circle" style="color:#e74c3c"></i>';
                             }
                             html += `
                                 <div class="token-row">
@@ -130,15 +175,14 @@
                         });
                         tokenList.innerHTML = html;
                     } else {
-                        tokenList.innerHTML = '<div class="empty-state"><i class="bx bx-inbox"></i> No tokens in queue</div>';
+                        tokenList.innerHTML = '<div class="empty-state"><i class="bx bx-inbox"></i> No tokens</div>';
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching data:', error);
+                    console.error('Error:', error);
                 });
         }
 
-        // Fetch immediately and then every 2 seconds
         fetchData();
         setInterval(fetchData, 2000);
     </script>
