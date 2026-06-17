@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CN31 Server</title>
+    <title>CN31 Token</title>
     <link rel="stylesheet" href="/src/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
     <div class="wrapper">
@@ -12,32 +13,33 @@
             <!-- Left Side - Stats -->
             <div class="stats-side">
                 <div class="logo">
-                    ⚡ Token<span>Server</span>
+                    <i class='bx bx-code-alt'></i>
+                    CN31 <span>Token</span>
                     <span class="badge">v2.0</span>
                 </div>
                 
                 <div class="stats-grid" id="statsGrid">
                     <div class="stat-card">
                         <div class="value green" id="queueCount">0</div>
-                        <div class="label">Queue</div>
+                        <div class="label"><i class='bx bx-layer'></i> Queue</div>
                     </div>
                     <div class="stat-card">
                         <div class="value blue" id="receivedCount">0</div>
-                        <div class="label">Received</div>
+                        <div class="label"><i class='bx bx-download'></i> Received</div>
                     </div>
                     <div class="stat-card">
                         <div class="value orange" id="servedCount">0</div>
-                        <div class="label">Served</div>
+                        <div class="label"><i class='bx bx-check-circle'></i> Served</div>
                     </div>
                     <div class="stat-card">
                         <div class="value pink" id="expiredCount">0</div>
-                        <div class="label">Expired</div>
+                        <div class="label"><i class='bx bx-time'></i> Expired</div>
                     </div>
                 </div>
                 
                 <div class="progress-section">
                     <div class="label-row">
-                        <span>Queue Capacity</span>
+                        <span><i class='bx bx-data'></i> Queue Capacity</span>
                         <span id="queueProgressText">0 / 0</span>
                     </div>
                     <div class="progress-bar">
@@ -46,13 +48,13 @@
                 </div>
                 
                 <div class="info-row">
-                    <span>⏱ <strong id="uptime">0s</strong> uptime</span>
-                    <span>⚡ <strong id="tokensPerMin">0</strong> tokens/min</span>
-                    <span>📦 <strong id="peakQueue">0</strong> peak</span>
+                    <span><i class='bx bx-timer'></i> <strong id="uptime">0s</strong> uptime</span>
+                    <span><i class='bx bx-flash'></i> <strong id="tokensPerMin">0</strong> tokens/min</span>
+                    <span><i class='bx bx-trending-up'></i> <strong id="peakQueue">0</strong> peak</span>
                 </div>
                 
                 <div class="api-endpoints">
-                    <h4>API Endpoints</h4>
+                    <h4><i class='bx bx-terminal'></i> API Endpoints</h4>
                     <span class="endpoint"><span class="method">POST</span> /api/save-token</span>
                     <span class="endpoint"><span class="method">GET</span> /api/get-token</span>
                     <span class="endpoint"><span class="method">GET</span> /api/token/bulk?n=5</span>
@@ -64,11 +66,11 @@
             <!-- Right Side - Tokens -->
             <div class="tokens-side">
                 <div class="tokens-header">
-                    <h3>📋 Recent Tokens</h3>
-                    <span class="count" id="tokenCount">0 in queue</span>
+                    <h3><i class='bx bx-list-ul'></i> Recent Tokens</h3>
+                    <span class="count" id="tokenCount"><i class='bx bx-layer'></i> 0 in queue</span>
                 </div>
                 <div class="tokens-list" id="tokenList">
-                    <div class="empty-state">🎯 No tokens in queue</div>
+                    <div class="empty-state"><i class='bx bx-inbox'></i> No tokens in queue</div>
                 </div>
             </div>
         </div>
@@ -88,7 +90,7 @@
                     document.getElementById('uptime').textContent = data.uptime_seconds + 's';
                     document.getElementById('tokensPerMin').textContent = data.tokens_per_minute;
                     document.getElementById('peakQueue').textContent = data.peak_queue;
-                    document.getElementById('tokenCount').textContent = data.queue_size + ' in queue';
+                    document.getElementById('tokenCount').innerHTML = '<i class="bx bx-layer"></i> ' + data.queue_size + ' in queue';
                     
                     // Update progress bar
                     const peak = data.peak_queue || 1;
@@ -102,30 +104,33 @@
                         let html = '';
                         data.recent_tokens.forEach(item => {
                             const age = item.age;
-                            let color, status;
+                            let color, status, icon;
                             if (age < 60) {
                                 color = '#34d399';
                                 status = 'Fresh';
+                                icon = '<i class="bx bx-check-circle" style="color:#34d399"></i>';
                             } else if (age < 120) {
                                 color = '#fbbf24';
                                 status = 'Aging';
+                                icon = '<i class="bx bx-time" style="color:#fbbf24"></i>';
                             } else {
                                 color = '#f87171';
                                 status = 'Expiring';
+                                icon = '<i class="bx bx-error-circle" style="color:#f87171"></i>';
                             }
                             html += `
                                 <div class="token-row">
                                     <span class="token-text" style="color:${color}">${item.token}</span>
                                     <span class="token-meta">
-                                        <span class="token-age">${age}s</span>
-                                        <span class="token-status" style="color:${color}">${status}</span>
+                                        <span class="token-age"><i class='bx bx-clock'></i> ${age}s</span>
+                                        <span class="token-status" style="color:${color}">${icon} ${status}</span>
                                     </span>
                                 </div>
                             `;
                         });
                         tokenList.innerHTML = html;
                     } else {
-                        tokenList.innerHTML = '<div class="empty-state">🎯 No tokens in queue</div>';
+                        tokenList.innerHTML = '<div class="empty-state"><i class="bx bx-inbox"></i> No tokens in queue</div>';
                     }
                 })
                 .catch(error => {

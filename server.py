@@ -227,7 +227,7 @@ if __name__ == "__main__":
     TOKEN_TTL = args.ttl
 
     print(f"""
-[ Token Server v2.0 ]
+[ CN31 Token Server v2.0 ]
   Mode   : RAM Only (NO STORAGE)
   Port   : {args.port}
   TTL    : {args.ttl}s
